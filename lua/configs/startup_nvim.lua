@@ -4,9 +4,7 @@ return {
     type = 'text',
     align = 'center',
     margin = 2,
-    content = {
-      require 'custom.logo',
-    },
+    content = {},
     highlight = 'Title',
     default_color = '#FF8800',
   },

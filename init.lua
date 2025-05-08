@@ -473,10 +473,20 @@ require('lazy').setup({
           },
         },
       }
-      vim.api.nvim_set_hl(0, 'TelescopeNormal', { bg = 'none' })
-      vim.api.nvim_set_hl(0, 'TelescopeBorder', { bg = 'none' })
-      vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { bg = 'none' })
-      vim.api.nvim_set_hl(0, 'TelescopePromptTitle', { bg = 'none' })
+      for _, group in ipairs {
+        'TelescopeNormal',
+        'TelescopeBorder',
+        'TelescopePromptNormal',
+        'TelescopePromptBorder',
+        'TelescopeResultsNormal',
+        'TelescopeResultsDiffChange',
+        'TelescopeResultsDiffAdd',
+        'TelescopeResultsDiffDelete',
+      } do
+        vim.api.nvim_set_hl(0, group, { bg = 'NONE' })
+      end
+      vim.api.nvim_set_hl(0, 'TelescopeResultsDiffDelete', { fg = '#F7768D' })
+
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
