@@ -102,7 +102,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -194,6 +194,7 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('n', '<leader>e', ':Telescope file_browser path=%:p:h select_buffer=true<CR>')
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -238,8 +239,15 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
-  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  { import = 'kickstart.plugins' },
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  {
+    'startup-nvim/startup.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-file-browser.nvim' },
+    config = function()
+      require('startup').setup(require 'configs.startup_nvim')
+    end,
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -343,6 +351,11 @@ require('lazy').setup({
     },
   },
 
+  {
+    'nvim-telescope/telescope-file-browser.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
+  },
+
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
@@ -405,16 +418,69 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+        defaults = {
+          vimgrep_arguments = {
+            'rg',
+            '--color=never',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+          },
+          prompt_prefix = '   ',
+          selection_caret = '  ',
+          entry_prefix = '  ',
+          initial_mode = 'normal',
+          selection_strategy = 'reset',
+          sorting_strategy = 'ascending',
+          layout_strategy = 'horizontal',
+          display_stat = false,
+          layout_config = {
+            horizontal = { prompt_position = 'top', preview_width = 0.5 },
+            vertical = { mirror = false },
+            width = 0.87,
+            height = 0.80,
+            preview_cutoff = 120,
+          },
+          file_sorter = require('telescope.sorters').get_fuzzy_file,
+          generic_sorter = require('telescope.sorters').get_generic_fuzzy_sorter,
+          path_display = { 'truncate' },
+          file_ignore_patterns = { 'node_modules' },
+          border = {},
+          borderchars = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+          color_devicons = true,
+          use_less = true,
+          set_env = { ['COLORTERM'] = 'truecolor' },
+          theme = 'center',
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
+          file_browser = {
+            -- disables netrw and use telescope-file-browser in its place
+            display_stat = false,
+            hijack_netrw = true,
+            mappings = {
+              ['i'] = {
+                -- your custom insert mode mappings
+              },
+              ['n'] = {
+                -- your custom normal mode mappings
+              },
+            },
+          },
         },
       }
-
+      vim.api.nvim_set_hl(0, 'TelescopeNormal', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'TelescopeBorder', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'TelescopePromptTitle', { bg = 'none' })
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'file_browser')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -428,7 +494,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
@@ -713,7 +778,8 @@ require('lazy').setup({
 
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-        automatic_installation = false,
+        automatic_installation = true,
+        automatic_enable = true,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
@@ -878,6 +944,7 @@ require('lazy').setup({
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
+        transparent = true,
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
