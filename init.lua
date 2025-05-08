@@ -494,15 +494,32 @@ require('lazy').setup({
       vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', { fg = '#79A3F8' })
       vim.api.nvim_set_hl(0, 'TelescopeResultsDiffDelete', { fg = '#F7768D' })
       vim.api.nvim_set_hl(0, 'TelescopeResultsDiffChange', { fg = '#6183BB' })
-      -- never show the bottom statusline
-      vim.api.nvim_set_hl(0, 'StatusLine', { fg = '#BB99F8' })
+
+      vim.api.nvim_set_hl(0, 'StatusPath', { fg = '#BB99F8', bg = nil })
+      vim.api.nvim_set_hl(0, 'StatusBranchClean', { fg = '#A3BE8C' }) -- green if in sync
+      vim.api.nvim_set_hl(0, 'StatusBranchAhead', { fg = '#EBCB8B' }) -- yellow if un-pushed commits
+
+      function _G.GitBranchSection()
+        local s = vim.b.gitsigns_status_dict or {}
+        local head = s.head or ''
+        if #head == 0 then
+          return '' -- not in a repo
+        end
+        local hl = (s.ahead or 0) > 0 and 'StatusBranchAhead' or 'StatusBranchClean'
+        return string.format('%%#%s#', hl)
+      end
+
       vim.o.laststatus = 3
       vim.o.statusline = table.concat({
-        '%F', -- full path (left)
-        '%m', -- modified flag
-        '%=', -- split → what follows is right-aligned
-        "%{get(b:,'gitsigns_head','')}", -- git branch
-      }, ' ')
+        '%#StatusPath#', -- switch to StatusPath
+        '%F', -- full file path
+        -- Split point → everything after is right-aligned
+        '%=',
+        -- Section 3: Git branch, right-aligned via our helper
+        GitBranchSection(),
+        "%{get(b:,'gitsigns_head','')}",
+      }, '')
+
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
