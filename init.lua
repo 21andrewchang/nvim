@@ -497,6 +497,12 @@ require('lazy').setup({
       -- never show the bottom statusline
       vim.api.nvim_set_hl(0, 'StatusLine', { fg = '#BB99F8' })
       vim.o.laststatus = 3
+      vim.o.statusline = table.concat({
+        '%F', -- full path (left)
+        '%m', -- modified flag
+        '%=', -- split → what follows is right-aligned
+        "%{get(b:,'gitsigns_head','')}", -- git branch
+      }, ' ')
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
