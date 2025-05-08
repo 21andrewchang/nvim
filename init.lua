@@ -496,8 +496,8 @@ require('lazy').setup({
       vim.api.nvim_set_hl(0, 'TelescopeResultsDiffChange', { fg = '#6183BB' })
 
       vim.api.nvim_set_hl(0, 'StatusPath', { fg = '#BB99F8', bg = nil })
-      vim.api.nvim_set_hl(0, 'StatusBranchClean', { fg = '#A3BE8C' }) -- green if in sync
-      vim.api.nvim_set_hl(0, 'StatusBranchAhead', { fg = '#EBCB8B' }) -- yellow if un-pushed commits
+      vim.api.nvim_set_hl(0, 'StatusBranchClean', { fg = '#79A3F8' })
+      vim.api.nvim_set_hl(0, 'StatusBranchAhead', { fg = '#F7768D' })
 
       function _G.GitBranchSection()
         local s = vim.b.gitsigns_status_dict or {}
