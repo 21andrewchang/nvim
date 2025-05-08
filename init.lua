@@ -7,11 +7,12 @@
 ========         .----------------------.   | === |          ========
 ========         |.-""""""""""""""""""-.|   |-----|          ========
 ========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ======== ========         ||                    ||   | === |          ========
+========         ||   KICKSTART.NVIM   ||   |-----|          ========
+========         ||                    ||   | === |          ========
 ========         ||                    ||   |-----|          ========
 ========         ||:Tutor              ||   |:::::|          ========
 ========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
+=======
 ========        /::::::::::|  |::::::::::\  \ no mouse \     ========
 ========       /:::========|  |==hjkl==:::\  \ required \    ========
 ========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
@@ -139,6 +140,9 @@ vim.opt.timeoutlen = 300
 -- Configure how new splits should be opened
 vim.opt.splitright = true
 vim.opt.splitbelow = true
+vim.keymap.set('n', '<leader>lv', '<C-w>v')
+vim.keymap.set('n', '<leader>lh', '<C-w>s')
+vim.keymap.set('n', '<leader>lw', ':close<CR>')
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
@@ -482,13 +486,17 @@ require('lazy').setup({
         'TelescopeResultsDiffChange',
         'TelescopeResultsDiffAdd',
         'TelescopeResultsDiffDelete',
+        'StatusLine',
       } do
         vim.api.nvim_set_hl(0, group, { bg = 'NONE' })
       end
       vim.api.nvim_set_hl(0, 'TelescopePromptTitle', { fg = '#FE9E64' })
       vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', { fg = '#79A3F8' })
       vim.api.nvim_set_hl(0, 'TelescopeResultsDiffDelete', { fg = '#F7768D' })
-
+      vim.api.nvim_set_hl(0, 'TelescopeResultsDiffChange', { fg = '#6183BB' })
+      -- never show the bottom statusline
+      vim.api.nvim_set_hl(0, 'StatusLine', { fg = '#BB99F8' })
+      vim.o.laststatus = 3
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
@@ -1012,17 +1020,17 @@ require('lazy').setup({
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
+      -- local statusline = require 'mini.statusline'
+      -- -- set use_icons to true if you have a Nerd Font
+      -- statusline.setup { use_icons = vim.g.have_nerd_font }
+      --
+      -- -- You can configure sections in the statusline by overriding their
+      -- -- default behavior. For example, here we set the section for
+      -- -- cursor location to LINE:COLUMN
+      -- ---@diagnostic disable-next-line: duplicate-set-field
+      -- statusline.section_location = function()
+      --   return '%2l:%-2v'
+      -- end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
