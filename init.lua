@@ -499,14 +499,15 @@ require('lazy').setup({
       vim.api.nvim_set_hl(0, 'StatusBranchClean', { fg = '#79A3F8' })
       vim.api.nvim_set_hl(0, 'StatusBranchAhead', { fg = '#F7768D' })
 
-      function _G.GitBranchSection()
+      function _G.GitBranchHighlight()
         local s = vim.b.gitsigns_status_dict or {}
         local head = s.head or ''
         if #head == 0 then
-          return '' -- not in a repo
+          return ''
         end
-        local hl = (s.ahead or 0) > 0 and 'StatusBranchAhead' or 'StatusBranchClean'
-        return string.format('%%#%s#', hl)
+        local branch = vim.b.gitsigns_head
+        local hl = (s.added or s.changed or s.removed) > 0 and 'StatusBranchAhead' or 'StatusBranchClean'
+        return string.format('%%#%s#%s', hl, branch)
       end
 
       vim.o.laststatus = 3
@@ -516,8 +517,7 @@ require('lazy').setup({
         -- Split point → everything after is right-aligned
         '%=',
         -- Section 3: Git branch, right-aligned via our helper
-        GitBranchSection(),
-        "%{get(b:,'gitsigns_head','')}",
+        '%{%v:lua.GitBranchHighlight()%}',
       }, '')
 
       -- Enable Telescope extensions if they are installed
