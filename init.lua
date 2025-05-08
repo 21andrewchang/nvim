@@ -7,8 +7,7 @@
 ========         .----------------------.   | === |          ========
 ========         |.-""""""""""""""""""-.|   |-----|          ========
 ========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
+========         ||   KICKSTART.NVIM   ||   |-----|          ======== ========         ||                    ||   | === |          ========
 ========         ||                    ||   |-----|          ========
 ========         ||:Tutor              ||   |:::::|          ========
 ========         |'-..................-'|   |____o|          ========
@@ -478,6 +477,7 @@ require('lazy').setup({
         'TelescopeBorder',
         'TelescopePromptNormal',
         'TelescopePromptBorder',
+        'TelescopePromptTitle',
         'TelescopeResultsNormal',
         'TelescopeResultsDiffChange',
         'TelescopeResultsDiffAdd',
@@ -485,6 +485,8 @@ require('lazy').setup({
       } do
         vim.api.nvim_set_hl(0, group, { bg = 'NONE' })
       end
+      vim.api.nvim_set_hl(0, 'TelescopePromptTitle', { fg = '#FE9E64' })
+      vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', { fg = '#79A3F8' })
       vim.api.nvim_set_hl(0, 'TelescopeResultsDiffDelete', { fg = '#F7768D' })
 
       -- Enable Telescope extensions if they are installed
